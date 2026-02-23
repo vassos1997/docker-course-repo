@@ -13,7 +13,7 @@ app.use(
 
 app.use(express.static('public'));
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => { // this is the route handler for the root URL ("/"). When a user accesses the root URL, this function will be executed.
   res.send(`
     <html>
       <head>
@@ -36,11 +36,11 @@ app.get('/', (req, res) => {
   `);
 });
 
-app.post('/store-goal', (req, res) => {
+app.post('/store-goal', (req, res) => { // this is the route handler for the "/store-goal" URL, which is accessed when the form is submitted. It handles POST requests.
   const enteredGoal = req.body.goal;
   console.log(enteredGoal);
   userGoal = enteredGoal;
   res.redirect('/');
 });
 
-app.listen(80);
+app.listen(80); // starts a web server on port 80 which is the default HTTP port, so you don't have to specify it in the URL when accessing the app.
