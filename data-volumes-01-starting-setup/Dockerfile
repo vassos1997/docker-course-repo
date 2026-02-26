@@ -8,9 +8,11 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 80
+ENV PORT 80
+
+EXPOSE $PORT
 
 #VOLUME [ "/app/feedback" ] This volume is anonymous and  not persistent by default between different containers
 
 
-CMD ["npm", "start"]
+CMD ["npm", "server.js"]
