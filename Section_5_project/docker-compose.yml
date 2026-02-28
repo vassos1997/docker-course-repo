@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mongodb: # Give the service a name
+    image: mongo # Use the official MongoDB image
+    container_name: mongodb # Give the container a name
+    ports:
+      - '27017:27017' # Map port 27017 of the container to port 27017 of the host
+    volumes:
+      - data-volume:/data/db # Map the MongoDB data directory to a named volume
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin  # The Mongo image documentation tells us to use this specific name to create an admin.
+      - MONGO_INITDB_ROOT_PASSWORD=secret # The Mongo image documentation tells us to use this specific name to create a password.
+    networks:
+      - goals-net # Connect the container to the goals-net network
+
+  backend:
+    build: ./backend # Build the backend image based on the Dockerfile in the backend directory
+    container_name: goals-backend # Give the container a name
+    ports:
+      - '80:80' # Map port 80 of the container to port 80 of the host
+    volumes:
+      - ./backend:/app # Map the backend directory to the /app directory inside the container
+      - /app/node_modules # Map the node_modules directory to the /app/node_modules directory inside the container
+    environment:
+      - PORT=80 # Set the port
+      - DB_USERNAME=admin # Set the database username
+      - DB_PASSWORD=secret # Set the database password
+      - DB_HOST=mongodb # Set the database host
+      - DB_NAME=course-goals # Set the database name
+    networks:
+      - goals-net # Connect the container to the goals-net network
+    depends_on:
+      - mongodb # Wait for the MongoDB container to be ready before starting the backend container
+
+  frontend:
+    build: ./frontend # Build the frontend image based on the Dockerfile in the frontend directory
+    container_name: goals-frontend # Give the container a name
+    ports:
+      - '3000:3000' # Map port 3000 of the container to port 3000 of the host
+    volumes:
+      - ./frontend/src:/app/src # Map the frontend source directory to the /app/src directory inside the container
+      - ./frontend/public:/app/public # Map the frontend public directory to the /app/public directory inside the container
+    environment:
+      - CHOKIDAR_USEPOLLING=true # Helps React live reload in some Docker environments
+    networks:
+      - goals-net # Connect the container to the goals-net network
+    depends_on:
+      - backend # Wait for the backend container to be ready before starting the frontend container
+
+volumes:
+  data-volume:
+
+networks:
+  goals-net:
