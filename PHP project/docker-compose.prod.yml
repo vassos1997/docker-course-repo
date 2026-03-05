@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  nginx:
+    build:
+      context: .
+      # Point to the custom production Nginx recipe
+      dockerfile: dockerfiles/nginx.prod.Dockerfile
+    ports:
+      - "80:80" # We use standard port 80 for production internet traffic
+    depends_on:
+      - php
+    restart: always # If the server restarts, Docker will turn this container back on automatically
+
+  php:
+    build:
+      context: .
+      # Point to the custom production PHP recipe
+      dockerfile: dockerfiles/php.prod.Dockerfile
+    depends_on:
+      - mysql
+    restart: always
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    # CRITICAL: Notice there are NO "ports: - 3306:3306" here!
+    # In production, we NEVER expose the database to the host machine.
+    # Only PHP can talk to it over the internal Docker network.
+    env_file:
+      - ./env/mysql.env
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:

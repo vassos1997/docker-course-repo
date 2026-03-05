@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  # This acts as our utility container service.
+  # We name it 'npm' because its primary job is to run npm commands.
+  npm:
+    image: node:18-alpine
+    # We set the working directory to /app
+    working_dir: /app
+    # We bind mount the current host directory to /app inside the container
+    volumes:
+      - ./:/app # This is a bind mount, which means that the current directory on the host is mounted to the /app directory inside the container, so all changes in the host directory will be reflected in the container directory and vice versa.
+    # Setting the entrypoint to 'npm' means that any command we pass to docker-compose run
+    # will be appended to 'npm'. 
+    entrypoint: [ "npm" ]
+
+  # Utility container for pip commands (e.g. installing packages)
+  pip:
+    image: python:3.9-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    entrypoint: [ "pip" ]
+
+  # Utility container for python commands (e.g. running scripts)
+  python:
+    image: python:3.9-alpine
+    working_dir: /app
+    volumes:
+      - ./:/app
+    entrypoint: [ "python" ]
