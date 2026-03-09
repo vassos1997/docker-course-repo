@@ -31,3 +31,13 @@ COPY --from=builder /app /var/www/html
 
 # 2. BAKE THE PERMISSIONS: Give the www-data user permanent ownership of the storage and cache!
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# 3. SETUP ENTRYPOINT: Run migrations automatically before starting the server
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Set the entrypoint to the script we just copied
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# The default command to run if nothing else is specified (starts the PHP server)
+CMD ["php-fpm"]
