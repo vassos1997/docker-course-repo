@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: first-app-service
+spec:
+  # Ποια Pods ελέγχει αυτό το Service;
+  # Χρησιμοποιεί ΑΚΡΙΒΩΣ τα ίδια labels που βάλαμε στο Deployment μας!
+  selector:
+    app: first-app-pod
+
+  # Ποιες θύρες "ανοίγει" το Service;
+  ports:
+    - protocol: TCP
+      # Η θύρα ΕΞΩ (αυτή που βλέπει ο LoadBalancer / άλλα Pods)
+      port: 8000
+      # Η θύρα ΜΕΣΑ στο container (αυτή που ανοίξαμε στο Dockerfile με EXPOSE 8080)
+      targetPort: 8080
+
+  # Ο τύπος του Service. Για να είναι προσβάσιμο από τον browser μας (μέσω LoadBalancer),
+  # χρησιμοποιούμε LoadBalancer.
+  # Στο τοπικό k3d περιβάλλον μας, ο k3d-serverlb container θα αναλάβει αυτόν τον ρόλο.
+  type: LoadBalancer
