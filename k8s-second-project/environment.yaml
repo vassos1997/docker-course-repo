@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: data-store-config
+data:
+  folder: 'story'
+  # Μπορείς να προσθέσεις κι άλλα κλειδιά εδώ
+  # key: value

@@ -1,12 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: first-app-service
+  name: second-app-service
 spec:
   # Ποια Pods ελέγχει αυτό το Service;
   # Χρησιμοποιεί ΑΚΡΙΒΩΣ τα ίδια labels που βάλαμε στο Deployment μας!
   selector:
-    app: first-app-pod
+    app: second-app-pod
 
   # Ποιες θύρες "ανοίγει" το Service;
   ports:
@@ -14,7 +14,7 @@ spec:
       # Η θύρα ΕΞΩ (αυτή που βλέπει ο LoadBalancer / άλλα Pods)
       port: 8000
       # Η θύρα ΜΕΣΑ στο container (αυτή που ανοίξαμε στο Dockerfile με EXPOSE 8080)
-      targetPort: 8080
+      targetPort: 3000
 
   # Ο τύπος του Service. Χρησιμοποιούμε ClusterIP επειδή
   # η εξωτερική πρόσβαση γίνεται μέσω του Ingress.

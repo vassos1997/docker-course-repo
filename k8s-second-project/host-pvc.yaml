@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: host-pvc
+spec:
+  storageClassName: standard
+  # Πρέπει να ταιριάζει με το accessMode του PV που ζητάμε
+  accessModes:
+    - ReadWriteOnce
+  # Εδώ ζητάμε πόσο χώρο θέλουμε
+  resources:
+    requests:
+      storage: 1Gi

@@ -1,0 +1,50 @@
+apiVersion: apps/v1 # api version
+kind: Deployment # type of resource
+metadata: # metadata of the resource
+  name: second-app-deployment
+spec: # spec of the resource
+  replicas: 1 # number of replicas
+  selector: # it knows which pods to manage
+    matchLabels: # can put more labels here e.g. app: first-app-pod, version: v1
+      app: second-app-pod
+  template: # template of the resource
+    metadata: # metadata of the template
+      labels: # labels of the template
+        app: second-app-pod
+    spec: # spec of the template
+      containers: # containers of the template
+        - name: second-app-container # name of the container
+          image: second-app-image # image of the container
+          imagePullPolicy: Never # image pull policy
+          env:
+            - name: STORY_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: data-store-config
+                  key: folder
+          #livenessProbe: # it checks if the container is alive
+            #httpGet: 
+              #path: / # path of the request
+              #port: 8080 # path of the app
+            #initialDelaySeconds: 10 # delay before the first check
+            #periodSeconds: 10 # interval between checks
+            #timeoutSeconds: 2 # timeout for the request
+            #failureThreshold: 3 # number of failures before the container is restarted
+            #successThreshold: 1 # number of successes before the container is restarted 
+          #volumeMounts:
+       # - name: second-app-volume
+        #  mountPath: /app/story # path where the volume is mounted in the container
+      #volumes:
+       # - name: second-app-volume
+        #  emptyDir: {} # creates a temporary directory that is deleted when the pod is deleted but persists when a container restarts
+
+          volumeMounts:
+          - name: second-app-volume
+            # ΕΔΩ βάζουμε ΜΟΝΟ το πού πάει ΜΕΣΑ στο container:
+            mountPath: /app/story
+              
+      volumes:
+        - name: second-app-volume
+          # ΤΩΡΑ φωνάζουμε απλά τo Claim μας! Κρύβουμε τον δίσκο από τον προγραμματιστή!
+          persistentVolumeClaim:
+            claimName: host-pvc
