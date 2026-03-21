@@ -1,0 +1,49 @@
+apiVersion: apps/v1 
+kind: Deployment 
+metadata: 
+  name: task-api-deployment
+spec: 
+  replicas: 1 
+  selector: 
+    matchLabels: 
+      app: task-api-pod
+  template: 
+    metadata: 
+      labels: 
+        app: task-api-pod
+    spec: 
+      containers: 
+        - name: task-api-container 
+          image: task-image 
+          imagePullPolicy: Never 
+          ports:
+            - containerPort: 8000
+          env:
+            - name: TASKS_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: task-store-config
+                  key: folder
+
+          volumeMounts:
+          - name: task-api-volume
+            mountPath: /app/tasks
+              
+      volumes:
+        - name: task-api-volume
+          persistentVolumeClaim:
+            claimName: task-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-api-service
+spec:
+  selector:
+    app: task-api-pod
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
+  type: ClusterIP
+        

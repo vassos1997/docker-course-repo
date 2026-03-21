@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: task-pv
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  storageClassName: standard
+  # Ορίζουμε πώς επιτρέπεται να διαβαστεί/γραφτεί. 
+  # Το ReadWriteOnce σημαίνει ότι ΜΟΝΟ ΕΝΑ Node μπορεί να το κάνει mount για διάβασμα/γράψιμο ταυτόχρονα.
+  accessModes:
+    - ReadWriteOnce
+  # Εδώ μπαίνει η πραγματική πηγή του δίσκου (ίδια με το παλιό μας Deployment)
+  hostPath:
+    path: /data/tasks
+    type: DirectoryOrCreate
